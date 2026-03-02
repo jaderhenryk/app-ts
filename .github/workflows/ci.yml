@@ -16,10 +16,10 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Setup node | ${{ maxtrix.node }}
+    - name: Setup node | ${{ matrix.node }}
       uses: actions/setup-node@v4
       with:
-        node-version: ${{ maxtrix.node }}
+        node-version: ${{ matrix.node }}
         cache: 'yarn'
     - run: yarn
     - run: yarn run test
