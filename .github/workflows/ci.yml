@@ -36,8 +36,14 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    - name: Build docker image
-      run: docker build -t jaderhenryk/app-ts:${{ steps.generate_tag.outputs.sha }} .
+    - name: Build and push
+      uses: docker/build-push-action@v5
+      with:
+        push: true
+        tags: jaderhenryk/app-ts:${{ steps.generate_tag.outputs.sha }},jaderhenryk/app-ts:latest
 
-    - name: Push image
-      run: docker push jaderhenryk/app-ts:${{ steps.generate_tag.outputs.sha }}
+    # - name: Build docker image
+    #   run: docker build -t jaderhenryk/app-ts:${{ steps.generate_tag.outputs.sha }} .
+
+    # - name: Push image
+    #   run: docker push jaderhenryk/app-ts:${{ steps.generate_tag.outputs.sha }}
