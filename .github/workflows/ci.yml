@@ -52,7 +52,7 @@ jobs:
       run: |
         docker build -t $REGISTRY/jaderhenryk_ci_app_ts:$TAG .
         docker push $REGISTRY/jaderhenryk_ci_app_ts:$TAG
-        IMAGE=$(echo $$REGISTRY/jaderhenryk_ci_app_ts:$TAG)
+        IMAGE=$(echo $REGISTRY/jaderhenryk_ci_app_ts:$TAG)
         echo "image=$IMAGE" >> $GITHUB_OUTPUT
 
     - name: Deploy to App Runner
