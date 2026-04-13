@@ -42,8 +42,8 @@ jobs:
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v6
       with:
-        role-to-assume: 'arn:aws:iam::000637678697:role/ecr_role'
-        aws-region: us-east-1
+        role-to-assume: ${{ secrets.AWS_LOGIN_ROLE }}
+        aws-region: ${{ secrets.AWS_REGION }}
 
     - name: Login to AWS ECR
       id: login-ecr
@@ -56,9 +56,8 @@ jobs:
         TAG: ${{ steps.generate_tag.outputs.sha }}
       run: |
         docker build -t $REGISTRY/jaderhenryk_ci_app_ts:$TAG .
-        docker push $REGISTRY/jaderhenryk_ci_app_ts:$TAG
         docker tag $REGISTRY/jaderhenryk_ci_app_ts:$TAG $REGISTRY/jaderhenryk_ci_app_ts:latest
-        docker push $REGISTRY/jaderhenryk_ci_app_ts:latest
+        docker push --all-tags $REGISTRY/jaderhenryk_ci_app_ts
         IMAGE=$(echo $REGISTRY/jaderhenryk_ci_app_ts:$TAG)
         echo "image=$IMAGE" >> $GITHUB_OUTPUT
 
@@ -66,10 +65,10 @@ jobs:
       id: deploy-app-runner
       uses: awslabs/amazon-app-runner-deploy@main
       with:
-        service: app-ts
+        service: ${{ vars.SERVICE_NAME }}
         image: ${{ steps.build-docker-image.outputs.image }}
-        access-role-arn: arn:aws:iam::000637678697:role/app-runner-role
-        region: us-east-1
+        access-role-arn: ${{ secrets.AWS_APP_RUNNER_ROLE }}
+        region: ${{ secrets.AWS_REGION }}
         cpu: 1
         memory: 2
         port: 3000
